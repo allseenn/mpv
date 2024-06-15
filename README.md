@@ -17,7 +17,7 @@ Its suits for following scenarios:
 
 To install dependencies on Debian-based systems use following commands:
 ```
-apt install sshpass screen  build-essential libgtk-3-dev make
+apt install sshpass screen build-essential libgtk-3-dev make
 ```
 
 To install dependencies on rpm-based systems use following commands:
@@ -55,7 +55,7 @@ Program has table like interface with 3 rows:
 - entry fields
 - buttons
 
-Labels are connected my meaning to field bellow, buttons not allowed to be connected with meaning.
+Labels are connected by meaning with fields bellow, buttons not always to be connected by meaning with other elements.
 So we have 16 key elements: 7 fields and 9 buttons.
 
 7 fields:
