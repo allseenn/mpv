@@ -73,6 +73,9 @@ void close_file_command() {
 int main(int argc, char *argv[]) {
     gtk_init(&argc, &argv);
 
+    printf("Compiled with GTK version: %d.%d.%d\n", GTK_MAJOR_VERSION, GTK_MINOR_VERSION, GTK_MICRO_VERSION);
+    printf("Running with GTK version: %d.%d.%d\n", gtk_get_major_version(), gtk_get_minor_version(), gtk_get_micro_version());
+
     // Create and configure the main window
     GtkWidget *window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gtk_window_set_title(GTK_WINDOW(window), "MPV SSH Control");
@@ -118,7 +121,7 @@ int main(int argc, char *argv[]) {
     gtk_grid_attach(GTK_GRID(grid), mon_entry, 6, 1, 1, 1);
     gtk_grid_attach(GTK_GRID(grid), gtk_label_new("open/close"), 7, 0, 1, 1);
 
-    // Create and add the open button to the grid "⏹️"
+    // Create and add the open button to the grid 
     GtkWidget *open_button = gtk_button_new_with_label("⏏️");
     g_signal_connect(open_button, "clicked", G_CALLBACK(open_file_command), NULL);
     gtk_grid_attach(GTK_GRID(grid), open_button, 7, 1, 1, 1);

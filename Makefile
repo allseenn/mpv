@@ -1,15 +1,24 @@
 TARGET=mpvg
+DIR=/usr/local/sbin
 
 ARGS=`pkg-config --cflags --libs gtk+-3.0`
 
-all: $(TARGET).exe
-	./$(TARGET).exe
+all: $(TARGET)
 
-$(TARGET).exe: $(TARGET).o 
-	gcc -o $(TARGET).exe $(TARGET).o $(ARGS)
+$(TARGET): $(TARGET).o 
+	gcc -o $(TARGET) $(TARGET).o $(ARGS)
 
 $(TARGET).o: $(TARGET).c  
 	gcc -c $(TARGET).c -o $(TARGET).o $(ARGS)
 
+install:
+	cp $(TARGET) $(DIR)
+
 clean:
-	rm -f $(TARGET).o $(TARGET).exe 
+	rm -f $(TARGET).o $(TARGET)
+
+run:
+	./$(TARGET)
+
+remove:
+	rm -f $(DIR)/$(TARGET)
