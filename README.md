@@ -72,7 +72,7 @@ So we have 16 key elements: 7 fields and 9 buttons.
 
 1. ⏪ - rewind backward
 2. ▶️/⏸️ - pause/play
-3. ⏩ - skeep forward
+3. ⏩ - rewind forward
 4. ⏬ - speed down
 5. ⏫ - speed up
 6. 🔉 - volume down
@@ -110,7 +110,7 @@ If your server has several monitors you could set it here. Default value is `0` 
 
 ### Open file or url
 
-After you fill all nescessary fields click `Open file or url` button 9. ⏏️ - it will start MPV in fullscreen mode with selected file and monitor.
+After you fill all necessary fields click `Open file or url` button 9. ⏏️ - it will start MPV in fullscreen mode with selected file and monitor.
 
 ### Stop and close MPV
 
