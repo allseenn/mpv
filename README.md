@@ -122,11 +122,11 @@ Button 2. ▶️/⏸️ - pause or play selected earlier file
 
 ### Rewinds
 
-You could user button 1. ⏪ and  3. ⏩ to slowly rewind backward and forward you media file.
+You could user button 1. ⏪ and  3. ⏩ to slowly rewind backward or forward you media file.
 
 ### Speed
 
-Buttons 4. ⏬  and 5. ⏫ slow down or speed up playing media file.
+Buttons 4. ⏬  and 5. ⏫ slow down or speed up playback of your media file.
 
 ### Volume
 
