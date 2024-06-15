@@ -23,10 +23,10 @@ void execute_command(const char *command) {
     const char *port = gtk_entry_get_text(GTK_ENTRY(port_entry));
     const char *pass = gtk_entry_get_text(GTK_ENTRY(pass_entry));
 
-    char ssh_command[512];
+    char ssh_command[1024];
     snprintf(ssh_command, sizeof(ssh_command), 
             "sshpass -p '%s' ssh -p %s %s@%s 'cat << EOF | socat - /tmp/mpvsocket\n"
-             "{\"command\": [\"seek\", 5]}\n"
+             "{command: %s }\n"
              "EOF'",
             pass, port, user, host, command);
     
@@ -39,14 +39,35 @@ void on_button_clicked(GtkWidget *widget, gpointer data) {
 }
 
 void open_file_command() {
+    const char *user = gtk_entry_get_text(GTK_ENTRY(user_entry));
+    const char *host = gtk_entry_get_text(GTK_ENTRY(host_entry));
+    const char *port = gtk_entry_get_text(GTK_ENTRY(port_entry));
+    const char *pass = gtk_entry_get_text(GTK_ENTRY(pass_entry));
+
     const char *path = gtk_entry_get_text(GTK_ENTRY(path_entry));
     const char *file = gtk_entry_get_text(GTK_ENTRY(file_entry));
     const char *mon = gtk_entry_get_text(GTK_ENTRY(mon_entry));
 
     char open_file[256];
-    snprintf(open_file, sizeof(open_file), "DISPLAY=:0 mpv --fullscreen --screen=%s --input-ipc-server=/tmp/mpvsocket %s%s", mon, path, file);
+    snprintf(open_file, sizeof(open_file), 
+    "sshpass -p '%s' ssh -p %s %s@%s \"screen -dmS mpv_session bash -c 'DISPLAY=:0 mpv --fullscreen --screen=%s --input-ipc-server=/tmp/mpvsocket %s/%s'\"",
+    pass, port, user, host, mon, path, file);
 
-    execute_command(open_file);
+    system(open_file);
+}
+
+void close_file_command() {
+    const char *user = gtk_entry_get_text(GTK_ENTRY(user_entry));
+    const char *host = gtk_entry_get_text(GTK_ENTRY(host_entry));
+    const char *port = gtk_entry_get_text(GTK_ENTRY(port_entry));
+    const char *pass = gtk_entry_get_text(GTK_ENTRY(pass_entry));
+
+    char close_command[256];
+    snprintf(close_command, sizeof(close_command), 
+        "sshpass -p '%s' ssh -p %s %s@%s \"screen -S mpv_session -X quit && rm /tmp/mpvsocket\"",
+        pass, port, user, host);
+
+    system(close_command);
 }
 
 int main(int argc, char *argv[]) {
@@ -54,7 +75,7 @@ int main(int argc, char *argv[]) {
 
     // Create and configure the main window
     GtkWidget *window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-    gtk_window_set_title(GTK_WINDOW(window), "MPV Player");
+    gtk_window_set_title(GTK_WINDOW(window), "MPV SSH Control");
     gtk_container_set_border_width(GTK_CONTAINER(window), 10);
 
     // Create a grid and add it to the main window
@@ -95,27 +116,32 @@ int main(int argc, char *argv[]) {
     gtk_grid_attach(GTK_GRID(grid), file_entry, 5, 1, 1, 1);
     gtk_grid_attach(GTK_GRID(grid), gtk_label_new("mon"), 6, 0, 1, 1);
     gtk_grid_attach(GTK_GRID(grid), mon_entry, 6, 1, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), gtk_label_new("open/close"), 7, 0, 1, 1);
 
-    // Create and add the open button to the grid
+    // Create and add the open button to the grid "⏹️"
     GtkWidget *open_button = gtk_button_new_with_label("⏏️");
     g_signal_connect(open_button, "clicked", G_CALLBACK(open_file_command), NULL);
     gtk_grid_attach(GTK_GRID(grid), open_button, 7, 1, 1, 1);
 
+    // Create and add the close button to the grid "⏹️"
+    GtkWidget *close_button = gtk_button_new_with_label("⏹️");
+    g_signal_connect(close_button, "clicked", G_CALLBACK(close_file_command), NULL);
+    gtk_grid_attach(GTK_GRID(grid), close_button, 7, 2, 1, 1);
+
     // Create an array of labels and commands for other buttons
-    const char *labels[8] = {"⏪", "▶️/⏸️", "⏩", "⏬", "⏫", "🔉", "🔊", "⏹️"};
-    const char *commands[8] = {
+    const char *labels[7] = {"⏪", "▶️/⏸️", "⏩", "⏬", "⏫", "🔉", "🔊"};
+    const char *commands[7] = {
         "[\"seek\", -5]",
         "[\"cycle\", \"pause\"]",
         "[\"seek\", 5]",
-        "[ \"add\", \"speed\", -0.1 ]",
-        "[ \"add\", \"speed\", 0.1 ]",
-        "[\"add\", \"volume\", -5 ]",
-        "[\"add\", \"volume\", 5 ]",
-        "[\"quit\"]"
+        "[\"add\", \"speed\", -0.2]",
+        "[\"add\", \"speed\", 0.2]",
+        "[\"add\", \"volume\", -5]",
+        "[\"add\", \"volume\", 5]",
     };
 
     // Create and add other buttons to the grid
-    for (int i = 0; i < 8; i++) {
+    for (int i = 0; i < 7; i++) {
         GtkWidget *button = gtk_button_new_with_label(labels[i]);
         g_signal_connect(button, "clicked", G_CALLBACK(on_button_clicked), (gpointer)commands[i]);
         gtk_grid_attach(GTK_GRID(grid), button, i, 2, 1, 1);
