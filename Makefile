@@ -13,6 +13,7 @@ $(TARGET).o: $(TARGET).c
 
 install:
 	cp $(TARGET) $(DIR)
+	cp $(TARGET).css $(DIR)
 
 clean:
 	rm -f $(TARGET).o $(TARGET)
@@ -22,3 +23,4 @@ run:
 
 remove:
 	rm -f $(DIR)/$(TARGET)
+	rm -f $(DIR)/$(TARGET).css

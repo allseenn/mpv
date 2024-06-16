@@ -1,6 +1,8 @@
 #include <gtk/gtk.h>
 #include <stdlib.h>
 #include <string.h>
+#include <libgen.h>
+#include <unistd.h>
 
 GtkWidget *user_entry;
 GtkWidget *host_entry;
@@ -153,10 +155,22 @@ int main(int argc, char *argv[]) {
     // Connect the destroy signal for the main window
     g_signal_connect(window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
 
-    // Apply CSS styling
-    GtkCssProvider *provider = gtk_css_provider_new();
-    gtk_css_provider_load_from_path(provider, "style.css", NULL);
-    apply_css(window, GTK_STYLE_PROVIDER(provider));
+    // Get the directory of the executable
+    char exe_path[1024];
+    ssize_t len = readlink("/proc/self/exe", exe_path, sizeof(exe_path) - 1);
+    if (len != -1) {
+        exe_path[len] = '\0';
+        char *dir = dirname(exe_path);
+
+        // Construct the CSS file path relative to the executable directory
+        char css_path[1024];
+        snprintf(css_path, sizeof(css_path), "%s/mpvg.css", dir);
+
+        // Apply CSS styling
+        GtkCssProvider *provider = gtk_css_provider_new();
+        gtk_css_provider_load_from_path(provider, css_path, NULL);
+        apply_css(window, GTK_STYLE_PROVIDER(provider));
+    }
 
     // Show all widgets and start the main loop
     gtk_widget_show_all(window);
